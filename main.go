@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"toto-game/go-service/configs"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -37,10 +38,17 @@ func getRules(context *gin.Context) {
 
 }
 
+func testRoot(context *gin.Context) {
+	context.JSON(http.StatusOK, gin.H{"message": "hello world"})
+}
+
 func main() {
+	configs.ConnectDB()
+
 	router := gin.Default()
 	router.Use(cors.Default())
 
+	router.GET("/", testRoot)
 	router.GET("/rules", getRules)
 
 	err := router.Run(":9090")
