@@ -18,7 +18,7 @@ func EnvMongoURI() string {
 	password := os.Getenv("MONGO_PASSWORD")
 	db := os.Getenv("MONGO_INITDB_DATABASE")
 
-	return fmt.Sprintf("mongodb://%s:%s@localhost:27017/%s?authSource=admin", user, password, db)
+	return fmt.Sprintf("mongodb://%s:%s@mongodb:27017/%s?authSource=admin", user, password, db)
 }
 
 func EnvMongoDB() string {

@@ -4,16 +4,16 @@
 
 FROM golang:1.19-buster AS build
 
-WORKDIR /server
+WORKDIR /service
 
 COPY go.mod ./
 COPY go.sum ./
 
 RUN go mod download && go mod verify
 
-COPY *.go ./
+COPY . .
 
-RUN go build -o /go-server
+RUN go build -o /go-service
 
 ##
 ## Deploy
@@ -23,10 +23,11 @@ FROM gcr.io/distroless/base-debian10
 
 WORKDIR /
 
-COPY --from=build /go-server /go-server
+COPY --from=build /go-service /go-service
+COPY .env .
 
 EXPOSE 9090
 
 USER nonroot:nonroot
 
-ENTRYPOINT ["/go-server"]
+ENTRYPOINT ["/go-service"]
