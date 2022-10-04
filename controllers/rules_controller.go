@@ -59,7 +59,7 @@ func GetAllRules() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK,
-			responses.RuleResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": rules}},
+			responses.RuleResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": rules, "number": len(rules)}},
 		)
 	}
 }
