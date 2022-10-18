@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -49,16 +48,12 @@ func GetAllRules() gin.HandlerFunc {
 			return
 		}
 
-		fmt.Print(results)
-
 		defer results.Close(ctx)
 		for results.Next(ctx) {
 			var singleRule models.Rule
 			if err = results.Decode(&singleRule); err != nil {
 				c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail"})
 			}
-
-			fmt.Print(singleRule)
 
 			rules = append(rules, singleRule)
 		}
