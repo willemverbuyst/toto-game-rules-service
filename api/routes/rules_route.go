@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"toto-game/go-service/controllers"
+	"toto-game-rules-service/api/controllers"
 
 	"github.com/gin-gonic/gin"
 )

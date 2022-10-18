@@ -1,4 +1,4 @@
-module toto-game/go-service
+module toto-game-rules-service
 
 go 1.19
 

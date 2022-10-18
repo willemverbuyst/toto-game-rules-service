@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-	"toto-game/go-service/configs"
-	"toto-game/go-service/models"
-	"toto-game/go-service/responses"
+	"toto-game-rules-service/api/configs"
+	"toto-game-rules-service/api/models"
+	"toto-game-rules-service/api/responses"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"

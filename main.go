@@ -2,8 +2,8 @@ package main
 
 import (
 	"log"
-	"toto-game/go-service/configs"
-	"toto-game/go-service/routes"
+	"toto-game-rules-service/api/configs"
+	"toto-game-rules-service/api/routes"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
