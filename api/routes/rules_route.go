@@ -8,5 +8,5 @@ import (
 
 func RulesRoute(router *gin.Engine) {
 	router.GET("/rules", controllers.GetAllRules())
-	router.GET("/rules/:ruleId", controllers.GetARule())
+	router.GET("/rules/:id", controllers.GetARule())
 }

@@ -1,15 +1,11 @@
 package routes
 
 import (
-	"net/http"
+	"toto-game-rules-service/api/controllers"
 
 	"github.com/gin-gonic/gin"
 )
 
-func testRoot(context *gin.Context) {
-	context.JSON(http.StatusOK, gin.H{"message": "hello world"})
-}
-
 func RootRoute(router *gin.Engine) {
-	router.GET("/", testRoot)
+	router.GET("/", controllers.CheckRoot())
 }
