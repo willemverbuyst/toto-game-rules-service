@@ -2,8 +2,7 @@ version: '3'
 services:
   mongodb:
     image: mongo
-    container_name: toto-game-mongodb
-    hostname: toto-game-mongodb
+    container_name: toto-mongodb
     ports:
       - 27017:27017
     env_file:
@@ -12,25 +11,26 @@ services:
       - mongo-db:/data/db
     networks:
       - toto-game-net
-  go-service:
-    build:
-      context: ./go-service
-      dockerfile: Dockerfile
-    container_name: toto-game-rules-service
-    hostname: toto-game-go-service
-    ports:
-      - 9090:9090
-    depends_on:
-      - mongodb
-      - mongodb-seed
-    networks:
-      - toto-game-net
+  # go-service:
+  #   build:
+  #     context: ./go-service
+  #     dockerfile: Dockerfile
+  #   container_name: toto-go-service
+  #   hostname: toto-go-service
+  #   ports:
+  #     - 9090:9090
+  #   depends_on:
+  #     - mongodb
+  #     - mongodb-seed
+  #   networks:
+  #     - toto-game-net
   mongodb-seed:
     build:
       context: ./data
       dockerfile: Dockerfile
     depends_on:
       - mongodb
+    container_name: toto-mongodb-seed
     networks:
       - toto-game-net
 networks:
