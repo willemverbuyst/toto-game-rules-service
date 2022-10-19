@@ -51,7 +51,7 @@ func GetRule() gin.HandlerFunc {
 }
 
 // GetRules godoc
-// @Summary Get rules array
+// @Summary Get rules
 // @Description Responds with the list of all rules as JSON.
 // @Tags rules
 // @Produce json
@@ -86,7 +86,7 @@ func GetRules() gin.HandlerFunc {
 }
 
 // AddRule godoc
-// @Summary      Add Rule
+// @Summary      Add rule
 // @Description  Responds with the rule created of as JSON.
 // @Tags         rules
 // @Accept       json
@@ -175,7 +175,7 @@ func DeleteRule() gin.HandlerFunc {
 }
 
 // UpdateRule godoc
-// @Summary      Updates a rule
+// @Summary      Update rule
 // @Description  Responds with a rule as JSON
 // @Tags         rules
 // @Accept       json

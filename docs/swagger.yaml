@@ -116,7 +116,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/responses.RulesResponse'
-      summary: Get rules array
+      summary: Get rules
       tags:
       - rules
     post:
@@ -137,7 +137,7 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/responses.RuleResponse'
-      summary: Add Rule
+      summary: Add rule
       tags:
       - rules
   /rules/{id}:
@@ -216,7 +216,7 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
-      summary: Updates a rule
+      summary: Update rule
       tags:
       - rules
 swagger: "2.0"

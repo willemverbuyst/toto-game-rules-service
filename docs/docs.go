@@ -45,7 +45,7 @@ const docTemplate = `{
                 "tags": [
                     "rules"
                 ],
-                "summary": "Get rules array",
+                "summary": "Get rules",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -66,7 +66,7 @@ const docTemplate = `{
                 "tags": [
                     "rules"
                 ],
-                "summary": "Add Rule",
+                "summary": "Add rule",
                 "parameters": [
                     {
                         "description": "Add rule",
@@ -136,7 +136,7 @@ const docTemplate = `{
                 "tags": [
                     "rules"
                 ],
-                "summary": "Updates a rule",
+                "summary": "Update rule",
                 "parameters": [
                     {
                         "type": "string",
