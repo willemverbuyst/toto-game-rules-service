@@ -29,6 +29,15 @@ definitions:
     - answers
     - question
     type: object
+  responses.RootResponse:
+    properties:
+      message:
+        example: success
+        type: string
+      status:
+        example: 200
+        type: integer
+    type: object
   responses.RulesResponse:
     properties:
       data:
@@ -52,6 +61,19 @@ info:
   title: Toto Game Rule Service API
   version: "1.0"
 paths:
+  /:
+    get:
+      description: Responds with "Hello world" message.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.RootResponse'
+      summary: Test root
+      tags:
+      - root
   /rules:
     get:
       description: Responds with the list of all rules as JSON.
