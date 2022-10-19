@@ -12,5 +12,5 @@ type RulesResponse struct {
 	Status  int           `json:"status" example:"200"`
 	Message string        `json:"message" example:"success"`
 	Data    []models.Rule `json:"data"`
-	Number  int           `json:"number" example:"10"`
+	Results int           `json:"results" example:"10"`
 }

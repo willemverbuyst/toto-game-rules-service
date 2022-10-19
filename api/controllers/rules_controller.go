@@ -59,7 +59,7 @@ func GetAllRules() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK,
-			responses.RulesResponse{Status: http.StatusOK, Message: "success", Data: rules, Number: len(rules)},
+			responses.RulesResponse{Status: http.StatusOK, Message: "success", Data: rules, Results: len(rules)},
 		)
 	}
 }
