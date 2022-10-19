@@ -1,6 +1,5 @@
 [
   {
-    "id": "634f72f108f8b12c5c4d5e84",
     "order": 1,
     "question": "Hoeveel punten kan ik verdienen per wedstrijd?",
     "answers": [
@@ -23,7 +22,6 @@
     ]
   },
   {
-    "id": "634f787edc90bf2b7c868153",
     "order": 2,
     "question": "Hoeveel totorondes worden er gespeeld?",
     "answers": [
@@ -42,7 +40,6 @@
     ]
   },
   {
-    "id": "634f78d627dd05c29272361c",
     "order": 3,
     "question": "Wat is de totaaltoto?",
     "answers": [
@@ -61,7 +58,6 @@
     ]
   },
   {
-    "id": "634f793b0d93a7c10479abe5",
     "order": 4,
     "question": "Wanneer ben je de winnaar van de toto?",
     "answers": [
@@ -80,7 +76,6 @@
     ]
   },
   {
-    "id": "634f79967c9e7909d4d05999",
     "order": 5,
     "question": "Wat gebeurt er als ik mijn punten niet heb ingezet?",
     "answers": [

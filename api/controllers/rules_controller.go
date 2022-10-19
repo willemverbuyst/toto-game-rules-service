@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 	"toto-game-rules-service/api/configs"
@@ -35,7 +36,11 @@ func GetRule() gin.HandlerFunc {
 		var rule models.Rule
 		defer cancel()
 
-		err := rulesCollection.FindOne(ctx, bson.M{"id": ruleId}).Decode(&rule)
+		objId, _ := primitive.ObjectIDFromHex(ruleId)
+
+		fmt.Print(objId)
+
+		err := rulesCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&rule)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail", Error: err.Error()})
 			return
@@ -80,6 +85,15 @@ func GetRules() gin.HandlerFunc {
 	}
 }
 
+// AddRule godoc
+// @Summary      Add Rule
+// @Description  Responds with the rule created of as JSON.
+// @Tags         rules
+// @Accept       json
+// @Produce      json
+// @Param        user body models.Rule true "Add rule"
+// @Success      201 {object} responses.RuleResponse
+// @Router       /rules [post]
 func AddRule() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -109,7 +123,16 @@ func AddRule() gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail", Error: err.Error()})
 			return
 		}
-		c.JSON(http.StatusCreated, responses.RuleGeneralResponse{Status: http.StatusCreated, Message: "success", Data: map[string]interface{}{"data": result}})
+
+		var ruleInserted models.Rule
+		error := rulesCollection.FindOne(ctx, bson.M{"_id": result.InsertedID}).Decode(&ruleInserted)
+
+		if error != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail", Error: err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusCreated, responses.RuleResponse{Status: http.StatusCreated, Message: "success", Data: ruleInserted})
 	}
 }
 

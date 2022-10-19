@@ -110,6 +110,27 @@ paths:
       summary: Get rules array
       tags:
       - rules
+    post:
+      consumes:
+      - application/json
+      description: Responds with the rule created of as JSON.
+      parameters:
+      - description: Add rule
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.Rule'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/responses.RuleResponse'
+      summary: Add Rule
+      tags:
+      - rules
   /rules/{id}:
     get:
       consumes:
