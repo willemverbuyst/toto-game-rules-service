@@ -50,6 +50,15 @@ definitions:
         example: 200
         type: integer
     type: object
+  responses.RuleGeneralResponse:
+    properties:
+      message:
+        example: success
+        type: string
+      status:
+        example: 200
+        type: integer
+    type: object
   responses.RuleResponse:
     properties:
       data:
@@ -132,6 +141,30 @@ paths:
       tags:
       - rules
   /rules/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Responds with a message as JSON
+      parameters:
+      - description: Rule ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.RuleGeneralResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Delete rule by ID
+      tags:
+      - rules
     get:
       consumes:
       - application/json

@@ -136,13 +136,25 @@ func AddRule() gin.HandlerFunc {
 	}
 }
 
+// DeleteRule godoc
+// @Summary Delete rule by ID
+// @Description Responds with a message as JSON
+// @Tags rules
+// @Accept json
+// @Produce json
+// @Param id path string true "Rule ID"
+// @Success 200 {object} responses.RuleGeneralResponse
+// @Failure 404 {object} responses.ErrorResponse
+// @Router /rules/{id} [delete]
 func DeleteRule() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		ruleId := c.Param("id")
 		defer cancel()
 
-		result, err := rulesCollection.DeleteOne(ctx, bson.M{"id": ruleId})
+		objId, _ := primitive.ObjectIDFromHex(ruleId)
+
+		result, err := rulesCollection.DeleteOne(ctx, bson.M{"_id": objId})
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail", Error: err.Error()})
@@ -157,7 +169,7 @@ func DeleteRule() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK,
-			responses.RuleGeneralResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": "Rule successfully deleted!"}},
+			responses.RuleGeneralResponse{Status: http.StatusOK, Message: "Rule successfully deleted!"},
 		)
 	}
 }
