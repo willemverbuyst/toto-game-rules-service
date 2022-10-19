@@ -29,7 +29,7 @@ func GetRule() gin.HandlerFunc {
 
 		err := rulesCollection.FindOne(ctx, bson.M{"id": objId}).Decode(&rule)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, responses.RuleResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail", Data: map[string]interface{}{"error": err.Error()}})
 			return
 		}
 
@@ -53,7 +53,7 @@ func GetRules() gin.HandlerFunc {
 		results, err := rulesCollection.Find(ctx, bson.M{})
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, responses.RuleResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail", Data: map[string]interface{}{"error": err.Error()}})
 			return
 		}
 
@@ -61,7 +61,7 @@ func GetRules() gin.HandlerFunc {
 		for results.Next(ctx) {
 			var singleRule models.Rule
 			if err = results.Decode(&singleRule); err != nil {
-				c.JSON(http.StatusInternalServerError, responses.RuleResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+				c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail", Data: map[string]interface{}{"error": err.Error()}})
 			}
 
 			rules = append(rules, singleRule)
@@ -80,13 +80,13 @@ func AddRule() gin.HandlerFunc {
 
 		// validate the request body
 		if err := c.BindJSON(&rule); err != nil {
-			c.JSON(http.StatusBadRequest, responses.RuleResponse{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "fail", Data: map[string]interface{}{"error": err.Error()}})
 			return
 		}
 
 		// use the validator library to validate required fields
 		if validationErr := validate.Struct(&rule); validationErr != nil {
-			c.JSON(http.StatusBadRequest, responses.RuleResponse{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": validationErr.Error()}})
+			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "fail", Data: map[string]interface{}{"error": validationErr.Error()}})
 			return
 		}
 
@@ -98,7 +98,7 @@ func AddRule() gin.HandlerFunc {
 
 		result, err := rulesCollection.InsertOne(ctx, newRule)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, responses.RuleResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail", Data: map[string]interface{}{"error": err.Error()}})
 			return
 		}
 		c.JSON(http.StatusCreated, responses.RuleResponse{Status: http.StatusCreated, Message: "success", Data: map[string]interface{}{"data": result}})
@@ -116,13 +116,13 @@ func DeleteRule() gin.HandlerFunc {
 		result, err := rulesCollection.DeleteOne(ctx, bson.M{"id": objId})
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, responses.RuleResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail", Data: map[string]interface{}{"error": err.Error()}})
 			return
 		}
 
 		if result.DeletedCount < 1 {
 			c.JSON(http.StatusNotFound,
-				responses.RuleResponse{Status: http.StatusNotFound, Message: "error", Data: map[string]interface{}{"data": "Rule with specified ID not found!"}},
+				responses.ErrorResponse{Status: http.StatusNotFound, Message: "fail", Data: map[string]interface{}{"error": "Rule with specified ID not found!"}},
 			)
 			return
 		}
@@ -144,13 +144,13 @@ func UpdateRule() gin.HandlerFunc {
 
 		//validate the request body
 		if err := c.BindJSON(&rule); err != nil {
-			c.JSON(http.StatusBadRequest, responses.RuleResponse{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "fail", Data: map[string]interface{}{"error": err.Error()}})
 			return
 		}
 
 		//use the validator library to validate required fields
 		if validationErr := validate.Struct(&rule); validationErr != nil {
-			c.JSON(http.StatusBadRequest, responses.RuleResponse{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": validationErr.Error()}})
+			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "fail", Data: map[string]interface{}{"error": validationErr.Error()}})
 			return
 		}
 
@@ -158,7 +158,7 @@ func UpdateRule() gin.HandlerFunc {
 		result, err := rulesCollection.UpdateOne(ctx, bson.M{"id": objId}, bson.M{"$set": update})
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, responses.RuleResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail", Data: map[string]interface{}{"error": err.Error()}})
 			return
 		}
 
@@ -167,7 +167,7 @@ func UpdateRule() gin.HandlerFunc {
 		if result.MatchedCount == 1 {
 			err := rulesCollection.FindOne(ctx, bson.M{"id": objId}).Decode(&updatedRule)
 			if err != nil {
-				c.JSON(http.StatusInternalServerError, responses.RuleResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+				c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail", Data: map[string]interface{}{"error": err.Error()}})
 				return
 			}
 		}
