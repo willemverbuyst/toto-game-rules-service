@@ -10,13 +10,15 @@ import (
 	"toto-game-rules-service/api/responses"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 var rulesCollection *mongo.Collection = configs.GetCollection(configs.DB, "rules")
+var validate = validator.New()
 
-func GetARule() gin.HandlerFunc {
+func GetRule() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		ruleId := c.Param("id")
@@ -61,5 +63,57 @@ func GetAllRules() gin.HandlerFunc {
 		c.JSON(http.StatusOK,
 			responses.RulesResponse{Status: http.StatusOK, Message: "success", Data: rules, Results: len(rules)},
 		)
+	}
+}
+
+func AddRule() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		var rule models.Rule
+		defer cancel()
+
+		//validate the request body
+		if err := c.BindJSON(&rule); err != nil {
+			c.JSON(http.StatusBadRequest, responses.ValidationErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+			return
+		}
+
+		//use the validator library to validate required fields
+		if validationErr := validate.Struct(&rule); validationErr != nil {
+			c.JSON(http.StatusBadRequest, responses.ValidationErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": validationErr.Error()}})
+			return
+		}
+
+		newRule := models.Rule{
+			Id:       rule.Id,
+			Question: rule.Question,
+			Answers:  rule.Answers,
+		}
+
+		_, err := rulesCollection.InsertOne(ctx, newRule)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ValidationErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+			return
+		}
+
+		results, err := rulesCollection.Find(ctx, bson.M{})
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail"})
+			return
+		}
+
+		var rules []models.Rule
+		defer results.Close(ctx)
+		for results.Next(ctx) {
+			var singleRule models.Rule
+			if err = results.Decode(&singleRule); err != nil {
+				c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail"})
+			}
+
+			rules = append(rules, singleRule)
+		}
+
+		c.IndentedJSON(http.StatusCreated, responses.RulesResponse{Status: http.StatusOK, Message: "success", Data: rules, Results: len(rules)})
 	}
 }
