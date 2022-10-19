@@ -15,7 +15,96 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/rules": {
+            "get": {
+                "description": "Responds with the list of all rules as JSON.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rules"
+                ],
+                "summary": "Get rules array",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.RulesResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Answer": {
+            "type": "object",
+            "required": [
+                "text"
+            ],
+            "properties": {
+                "order": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "text": {
+                    "type": "string",
+                    "example": "12 o'clock"
+                }
+            }
+        },
+        "models.Rule": {
+            "type": "object",
+            "required": [
+                "answers",
+                "question"
+            ],
+            "properties": {
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Answer"
+                    }
+                },
+                "id": {
+                    "type": "string",
+                    "example": "634f787edc90bf2b7c868153"
+                },
+                "order": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "question": {
+                    "type": "string",
+                    "example": "What time is it?"
+                }
+            }
+        },
+        "responses.RulesResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Rule"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "success"
+                },
+                "results": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "status": {
+                    "type": "integer",
+                    "example": 200
+                }
+            }
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
@@ -24,8 +113,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:9090",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Toto-Game-Rule-Service API",
-	Description:      "Toto-Game-Rule-Service API in Go using Gin framework.",
+	Title:            "Toto Game Rule Service API",
+	Description:      "Toto Game Rule Service API in Go using Gin framework.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

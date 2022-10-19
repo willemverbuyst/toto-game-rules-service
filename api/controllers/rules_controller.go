@@ -37,7 +37,14 @@ func GetRule() gin.HandlerFunc {
 	}
 }
 
-func GetAllRules() gin.HandlerFunc {
+// GetRules godoc
+// @Summary Get rules array
+// @Description Responds with the list of all rules as JSON.
+// @Tags rules
+// @Produce json
+// @Success 200 {object} responses.RulesResponse
+// @Router /rules [get]
+func GetRules() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		var rules []models.Rule
@@ -61,7 +68,7 @@ func GetAllRules() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK,
-			responses.RuleResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": rules, "results": len(rules)}})
+			responses.RulesResponse{Status: http.StatusOK, Message: "success", Data: rules, Results: len(rules)})
 	}
 }
 
