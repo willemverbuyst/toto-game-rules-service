@@ -29,7 +29,7 @@ func GetRule() gin.HandlerFunc {
 
 		err := rulesCollection.FindOne(ctx, bson.M{"id": objId}).Decode(&rule)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail"})
+			c.JSON(http.StatusInternalServerError, responses.RuleResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
 			return
 		}
 
@@ -46,7 +46,7 @@ func GetAllRules() gin.HandlerFunc {
 		results, err := rulesCollection.Find(ctx, bson.M{})
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail"})
+			c.JSON(http.StatusInternalServerError, responses.RuleResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
 			return
 		}
 
@@ -54,7 +54,7 @@ func GetAllRules() gin.HandlerFunc {
 		for results.Next(ctx) {
 			var singleRule models.Rule
 			if err = results.Decode(&singleRule); err != nil {
-				c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail"})
+				c.JSON(http.StatusInternalServerError, responses.RuleResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
 			}
 
 			rules = append(rules, singleRule)
@@ -73,13 +73,13 @@ func AddRule() gin.HandlerFunc {
 
 		// validate the request body
 		if err := c.BindJSON(&rule); err != nil {
-			c.JSON(http.StatusBadRequest, responses.ValidationErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+			c.JSON(http.StatusBadRequest, responses.RuleResponse{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
 			return
 		}
 
 		// use the validator library to validate required fields
 		if validationErr := validate.Struct(&rule); validationErr != nil {
-			c.JSON(http.StatusBadRequest, responses.ValidationErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": validationErr.Error()}})
+			c.JSON(http.StatusBadRequest, responses.RuleResponse{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": validationErr.Error()}})
 			return
 		}
 
@@ -91,9 +91,37 @@ func AddRule() gin.HandlerFunc {
 
 		result, err := rulesCollection.InsertOne(ctx, newRule)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, responses.ValidationErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+			c.JSON(http.StatusInternalServerError, responses.RuleResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
 			return
 		}
 		c.JSON(http.StatusCreated, responses.RuleResponse{Status: http.StatusCreated, Message: "success", Data: map[string]interface{}{"data": result}})
+	}
+}
+
+func DeleteRule() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		ruleId := c.Param("id")
+		defer cancel()
+
+		objId, _ := primitive.ObjectIDFromHex(ruleId)
+
+		result, err := rulesCollection.DeleteOne(ctx, bson.M{"id": objId})
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.RuleResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+			return
+		}
+
+		if result.DeletedCount < 1 {
+			c.JSON(http.StatusNotFound,
+				responses.RuleResponse{Status: http.StatusNotFound, Message: "error", Data: map[string]interface{}{"data": "Rule with specified ID not found!"}},
+			)
+			return
+		}
+
+		c.JSON(http.StatusOK,
+			responses.RuleResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": "Rule successfully deleted!"}},
+		)
 	}
 }
