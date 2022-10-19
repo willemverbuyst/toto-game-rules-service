@@ -29,8 +29,31 @@ definitions:
     - answers
     - question
     type: object
+  responses.ErrorResponse:
+    properties:
+      error:
+        example: the error
+        type: string
+      message:
+        example: fail
+        type: string
+      status:
+        example: 500
+        type: integer
+    type: object
   responses.RootResponse:
     properties:
+      message:
+        example: success
+        type: string
+      status:
+        example: 200
+        type: integer
+    type: object
+  responses.RuleResponse:
+    properties:
+      data:
+        $ref: '#/definitions/models.Rule'
       message:
         example: success
         type: string
@@ -85,6 +108,31 @@ paths:
           schema:
             $ref: '#/definitions/responses.RulesResponse'
       summary: Get rules array
+      tags:
+      - rules
+  /rules/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Responds with a rule as JSON
+      parameters:
+      - description: Rule ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.RuleResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Get rule by ID
       tags:
       - rules
 swagger: "2.0"
