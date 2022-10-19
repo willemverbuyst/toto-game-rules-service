@@ -1,0 +1,8 @@
+host: localhost:9090
+info:
+  contact: {}
+  description: Toto-Game-Rule-Service API in Go using Gin framework.
+  title: Toto-Game-Rule-Service API
+  version: "1.0"
+paths: {}
+swagger: "2.0"
