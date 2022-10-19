@@ -1,12 +1,15 @@
 package models
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type Rule struct {
-	Id       int      `json:"id,omitempty"`
-	Question string   `json:"question,omitempty" validate:"required"`
-	Answers  []Answer `json:"answers,omitempty" validate:"required"`
+	Id       primitive.ObjectID `json:"id,omitempty"`
+	Order    int                `json:"order,omitempty"`
+	Question string             `json:"question" validate:"required"`
+	Answers  []Answer           `json:"answers" validate:"required"`
 }
 
 type Answer struct {
-	Id   int    `json:"id,omitempty"`
-	Text string `json:"text,omitempty" validate:"required"`
+	Order int    `json:"order,omitempty"`
+	Text  string `json:"text" validate:"required"`
 }
