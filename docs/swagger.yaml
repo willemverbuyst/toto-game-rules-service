@@ -189,4 +189,34 @@ paths:
       summary: Get rule by ID
       tags:
       - rules
+    put:
+      consumes:
+      - application/json
+      description: Responds with a rule as JSON
+      parameters:
+      - description: Rule ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Rule
+        in: body
+        name: rule
+        required: true
+        schema:
+          $ref: '#/definitions/models.Rule'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.RuleResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Updates a rule
+      tags:
+      - rules
 swagger: "2.0"

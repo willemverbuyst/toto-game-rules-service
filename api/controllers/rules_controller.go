@@ -174,6 +174,17 @@ func DeleteRule() gin.HandlerFunc {
 	}
 }
 
+// UpdateRule godoc
+// @Summary      Updates a rule
+// @Description  Responds with a rule as JSON
+// @Tags         rules
+// @Accept       json
+// @Produce      json
+// @Param        id path string true "Rule ID"
+// @Param        rule body models.Rule true "Rule"
+// @Success      200 {object} responses.RuleResponse
+// @Failure      404 {object} responses.ErrorResponse
+// @Router       /rules/{id} [put]
 func UpdateRule() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -196,7 +207,7 @@ func UpdateRule() gin.HandlerFunc {
 		}
 
 		update := bson.M{"order": rule.Order, "question": rule.Question, "answers": rule.Answers}
-		result, err := rulesCollection.UpdateOne(ctx, bson.M{"id": objId}, bson.M{"$set": update})
+		result, err := rulesCollection.UpdateOne(ctx, bson.M{"_id": objId}, bson.M{"$set": update})
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail", Error: err.Error()})
@@ -206,7 +217,7 @@ func UpdateRule() gin.HandlerFunc {
 		//get updated rule details
 		var updatedRule models.Rule
 		if result.MatchedCount == 1 {
-			err := rulesCollection.FindOne(ctx, bson.M{"id": objId}).Decode(&updatedRule)
+			err := rulesCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&updatedRule)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "fail", Error: err.Error()})
 				return
