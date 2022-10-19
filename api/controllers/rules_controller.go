@@ -125,3 +125,46 @@ func DeleteRule() gin.HandlerFunc {
 		)
 	}
 }
+
+func UpdateRule() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		ruleId := c.Param("id")
+		var rule models.Rule
+		defer cancel()
+
+		objId, _ := primitive.ObjectIDFromHex(ruleId)
+
+		//validate the request body
+		if err := c.BindJSON(&rule); err != nil {
+			c.JSON(http.StatusBadRequest, responses.RuleResponse{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+			return
+		}
+
+		//use the validator library to validate required fields
+		if validationErr := validate.Struct(&rule); validationErr != nil {
+			c.JSON(http.StatusBadRequest, responses.RuleResponse{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": validationErr.Error()}})
+			return
+		}
+
+		update := bson.M{"order": rule.Order, "question": rule.Question, "answers": rule.Answers}
+		result, err := rulesCollection.UpdateOne(ctx, bson.M{"id": objId}, bson.M{"$set": update})
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.RuleResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+			return
+		}
+
+		//get updated rule details
+		var updatedRule models.Rule
+		if result.MatchedCount == 1 {
+			err := rulesCollection.FindOne(ctx, bson.M{"id": objId}).Decode(&updatedRule)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, responses.RuleResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+				return
+			}
+		}
+
+		c.JSON(http.StatusOK, responses.RuleResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": updatedRule}})
+	}
+}
